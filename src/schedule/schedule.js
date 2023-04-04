@@ -105,7 +105,7 @@ function writeFile(data) {
 
 /** 30일 지난 log 파일 삭제 */
 function deleteFile(){
-  const maxAge = moment.duration(30, "days").asMilliseconds(); // 30일 지난 시간
+  const maxAge = moment.duration(LOG_SCHEDULE.deleteInterval, "days").asMilliseconds(); // 30일 지난 시간
   
   fs.readdir(directory, (err, files) => {
     if (err){
