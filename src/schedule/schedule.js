@@ -21,7 +21,7 @@ function LogSchedule() {
     let options = {
       url: getLog.url,
       method: "GET",
-      qs: {
+      qs: { // LOG_SCHEDULE -> env.yml 파일에서 가져옴
         fromDate: util.getOldTime("d", LOG_SCHEDULE.logSubDate, "YYYY-MM-DD"),
         toDate: util.getOldTime("d", LOG_SCHEDULE.logSubDate, "YYYY-MM-DD"),
         _pageSize: LOG_SCHEDULE.pageSize,
@@ -29,7 +29,7 @@ function LogSchedule() {
         context: "stats,errState,device_type",
         _notrunc: true,
       },
-      headers: getLog.head,
+      headers: getLog.head, // apis/getLog 파일에서 가져옴
       json: true,
     };
 
@@ -85,7 +85,7 @@ function dataFilter(recvData) {
   ); //map 끝
 
   return filteredData
-    .map((obj) => Object.values(obj).join(Buffer.from("1f", "hex")))
+    .map((obj) => Object.values(obj).join(Buffer.from("1f", "hex"))) // hex 코드 구분자 추가
     .join("\n");
 }
 
