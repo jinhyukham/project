@@ -1,0 +1,16 @@
+{
+
+    "apps": [{
+  
+        "name":"apiwrap" ,
+        "script":"./server.js" ,
+        "error_file": "../logs/apiconsole.log",
+        "out_file": "../logs/apiconsole.log",
+        "merge_logs" : true ,
+        "watch": [],
+        "watch_options": { "followSymlinks":false},
+        "exec_mode":"cluster",
+        "instances": 1
+      }]
+  
+  }
