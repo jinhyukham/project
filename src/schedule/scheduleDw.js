@@ -5,6 +5,7 @@ const path = require("path");
 const _ = require("lodash");
 const httpCall = require("../protocol/httpCall");
 const getLog = require("../apis/getLog");
+const moment = require('moment')
 // log openapi 조회 수 : max:1만, default:100
 const gOptions = {
   headers: {
@@ -36,7 +37,7 @@ function scheduleDw() {
     } catch (e) {
       logger.error(e);
     }
-    deleteFiles();
+    await deleteFiles();
     logger.info("### end scheduleDw ###\n");
   });
 } // 스케쥴 종료
@@ -89,7 +90,6 @@ async function createFile(page) {
       let txt = i > 1 ? "\n" + dataFilter(appendRes) : dataFilter(appendRes);
       fs.appendFileSync(fd, txt); // 내용 더하기
     } else {
-
       logger.error("> page=",page,appendRes.resultCode,appendRes.resultMessage);
       break;
     }
@@ -124,14 +124,19 @@ function dataFilter(recvData) {
 
 /** 일정기간 지난 파일 삭제 */
 function deleteFiles() {
-  let date = util.getOldTime("d", 30);
-  let files = fs.readdirSync(path.resolve(DW_DIR));
-
+  let date = new Date(util.getOldTime('d', 30));
+  let files = fs.readdirSync(path.resolve(DW_DIR)).filter(file=>file.endsWith('.txt'));
+  console.log(date);
   for (let file of files) {
-    let st = fs.statSync(DW_DIR + file);
-
-    if (st.isFile() && date > st.mtime) {
-      logger.info("> delete file:", file, st.mtime);
+    let st =  fs.statSync(DW_DIR + file);
+    if (st.isFile() && date > new Date(st.mtime)) {
+      fs.unlink(path.resolve(DW_DIR,file), (err) => {
+        if (err) {
+          logger.error(err);
+        } else {
+          logger.info("> delete file:", file, st.mtime);
+        }
+      });
     }
   }
 }
