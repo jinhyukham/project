@@ -26,7 +26,7 @@ function scheduleDw() {
   const scheduleDw = schedule.scheduleJob("*/5 * * * * *", async function () {
     util.envReload();
     logger.info("### start scheduleDw ###");
-    let fdate = util.getOldTime("d", 30, "YYYY-MM-DD 00:00:00.000"); //시작시간 테스트용 시간 들어가있음. 반영때 필수 변경!!
+    let fdate = util.getOldTime("d", 30, "YYYY-MM-DD 00:00:00.000"); //시작시간 테스트용 시간 들어가있음. 반영때 필수로 변경 default:1 !!
     let tdate = util.getOldTime("d", 1, "YYYY-MM-DD 23:59:59.999"); //종료시간
 
     try {
@@ -37,7 +37,7 @@ function scheduleDw() {
     } catch (e) {
       logger.error(e);
     }
-    await deleteFiles();
+    deleteFiles();
     logger.info("### end scheduleDw ###\n");
   });
 } // 스케쥴 종료
@@ -124,12 +124,11 @@ function dataFilter(recvData) {
 
 /** 일정기간 지난 파일 삭제 */
 function deleteFiles() {
-  let date = new Date(util.getOldTime('d', 30));
+  let date = new Date(util.getOldTime('d', COG_LOG.deleteInterval)); // 삭제 기간 설정
   let files = fs.readdirSync(path.resolve(DW_DIR)).filter(file=>file.endsWith('.txt'));
-  console.log(date);
   for (let file of files) {
     let st =  fs.statSync(DW_DIR + file);
-    if (st.isFile() && date > new Date(st.mtime)) {
+    if (st.isFile() && date > new Date(st.mtime)) { // 파일 생성 시간이 삭제기간 넘었을때
       fs.unlink(path.resolve(DW_DIR,file), (err) => {
         if (err) {
           logger.error(err);
