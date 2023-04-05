@@ -1,10 +1,4 @@
 
-const url = `${LOG_SCHEDULE.cogUrl}${LOG_SCHEDULE.projectId}/log`;
-const head = {
-  "coginsight-api-key": LOG_SCHEDULE.apiKey,
-  "coginsight-domain-id": LOG_SCHEDULE.domainId,
-};
-
 const recv = [
   { name: "name", length: 50 },
   { name: "sessionId", length: 50 },
@@ -51,7 +45,5 @@ const recv = [
   { name: "context.stats.actionType", length: 30 },
 ];
 module.exports = {
-  url,
-  head,
-  recv,
+  recv
 };
