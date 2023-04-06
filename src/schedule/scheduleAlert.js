@@ -18,7 +18,7 @@ async function envReset() {
 }
 
 function scheduleAlert(){
-  const scheduleAlert = schedule.scheduleJob("*/6 * * * * *", async function () {
+  const scheduleAlert = schedule.scheduleJob(rule, async function () { // "*/6 * * * * *" 테스트 시
     /* log파일 읽어온 후 특정 비율 이상 에러 발생 확인 */
     loggerAlert.info("######### scheduleAlert start ##########");
     try {
@@ -43,6 +43,7 @@ function scheduleAlert(){
       let errCount = await httpCall(options);
 
       if (logCount.resultCode == 200 && errCount.resultCode == 200) {
+        loggerAlert.info(`> logCount:${logCount.result} errCount:${errCount.result} percent:${(errCount.result / logCount.result) * 100 || 0}`)
         if (util.nullchk(errCount) && (errCount.result / logCount.result) * 100 > AGENT_SET.percent) {
           await clientCall();
         } else {
@@ -95,10 +96,10 @@ async function clientCall() {
     if (call?.error_code == 0) { 
       loggerAlert.info('######### push API call! #########');
     } else {
-      loggerAlert.info('######### push API Fail! #########');
+      loggerAlert.error('######### push API Fail! #########');
     }
   } catch (e) {
-    loggerAlert.info("######### push API Error #########");
+    loggerAlert.error("######### push API Error #########");
   }
   loggerAlert.info("######### push API End #########");
 }

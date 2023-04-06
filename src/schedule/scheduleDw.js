@@ -23,7 +23,7 @@ rule.hour = 3; // 오전 3시에 실행 밑에 테스트용 시간 바꿔야함
 
 /** 매일 오전 3시에 전일 로그 데이터 생성 */
 function scheduleDw() {
-  const scheduleDw = schedule.scheduleJob("*/5 * * * * *", async function () {
+  const scheduleDw = schedule.scheduleJob(rule, async function () { // "*/5 * * * * *" 테스트
     util.envReload();
     loggerDw.info("### start scheduleDw ###");
     let fdate = util.getOldTime("d", COG_LOG.subFromDate, "YYYY-MM-DD 00:00:00.000"); //시작시간 테스트용 시간 들어가있음. 반영때 필수로 변경 default:1 !!
@@ -67,7 +67,7 @@ async function getCount(fdate, tdate) {
 
 /** 데이터 필터 및 파일생성 */
 async function createFile(page) {
-  let options = {
+  const options = {
     url: `${COG_LOG.baseUrl}/apis/projects/${COG_LOG.projectId}/log`,
     method: "GET",
     qs: { // LOG_SCHEDULE -> env.yml 파일에서 가져옴
@@ -80,19 +80,18 @@ async function createFile(page) {
     ...gOptions,
   };
 
-  let date = util.getOldTime("d", 0, "YYYYMMDD");
-  let fd = fs.openSync(`${DW_DIR}/DW_SOE_${date}.dat`, "w");
+  const date = util.getOldTime("d", 0, "YYYYMMDD");
+  const fd = fs.openSync(`${DW_DIR}/DW_SOE_${date}.dat`, "w");
   
   for (let i = 1; i <= page; i++) { // 페이징처리
     options.qs._page = i;
-    let appendRes = await httpCall(options);
-    if (appendRes.resultCode == 200) {
-      let txt = i > 1 ? "\n" + dataFilter(appendRes) : dataFilter(appendRes);
-      fs.appendFileSync(fd, txt); // 내용 더하기
-    } else {
+    const appendRes = await httpCall(options);
+    if (appendRes.resultCode !==200) {
       loggerDw.error("> page=", page, appendRes.resultCode, appendRes.resultMessage);
       break;
     }
+    const txt = i > 1 ? "\n" + dataFilter(appendRes) : dataFilter(appendRes);
+    fs.appendFileSync(fd, txt); // 내용 더하기
   }
   loggerDw.info(`> log file created ${DW_DIR}/DW_SOE_${date}.dat`)
   fs.closeSync(fd);
@@ -101,10 +100,9 @@ async function createFile(page) {
 /** logsAPI에서 받아온 데이터 정제*/
 function dataFilter(recvData) {
   const filteredData = recvData.result.map((data) =>
-    getLog.recv.reduce((saveData, { name, length, key }) => {
+    getLog.recv.reduce((saveData, { name, length, key }) => { // ../apis/getLog 참조
       let bf = _.get(data, name);
-      if (!_.isEmpty(bf) && key) {
-        // data 객체에서 name 속성의 값을 추출한 값이 있고 key 값이 있을 때
+      if (!_.isEmpty(bf) && key) { // data 객체에서 name 속성의 값을 추출한 값이 있고 key 값이 있을 때
         saveData[key] = bf[0][key]; // key 값이 있을경우 배열에 첫번째 값만 가져옴.
       } else {
         bf = _.isObject(bf) ? JSON.stringify(bf) : bf && bf.toString(); // 문자열로 변환
@@ -124,17 +122,14 @@ function dataFilter(recvData) {
 
 /** 일정기간 지난 파일 삭제 */
 function deleteFiles() {
-  let date = new Date(util.getOldTime('d', COG_LOG.deleteDate)); // 삭제 기간 설정
-  let files = fs.readdirSync(path.resolve(DW_DIR)).filter(file=>file.endsWith('.txt'));
+  const date = new Date(util.getOldTime('d', COG_LOG.deleteDate)); // 삭제 기간 설정
+  const files = fs.readdirSync(path.resolve(DW_DIR)).filter(file=>file.endsWith('.txt'));
   for (let file of files) {
-    let st =  fs.statSync(DW_DIR + file);
+    const st =  fs.statSync(DW_DIR + file);
     if (st.isFile() && date > new Date(st.mtime)) { // 파일 생성 시간이 삭제기간 넘었을때
       fs.unlink(path.resolve(DW_DIR,file), (err) => {
-        if (err) {
-          loggerDw.error(err);
-        } else {
-          loggerDw.info("> delete file:", file, st.mtime);
-        }
+        if (err) loggerDw.error(err);
+        else loggerDw.info("> delete file:", file, st.mtime);
       });
     }
   }

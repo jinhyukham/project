@@ -9,7 +9,7 @@ global.HOST_NM = process.env.HOST_NM || require("os").hostname();
 global.ENV_CD = process.env.ENV_CD || "DEV";
 util.envReload();
 
-require("./logs/logging");
+require("./config/logging");
 logger.info('batch server open>>')
 require("./src/index");
 
