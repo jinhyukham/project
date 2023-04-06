@@ -31,14 +31,18 @@ function scheduleDw() {
 
     try {
       let count = await getCount(fdate, tdate); // log pageCount 가져오기
-      let page = Math.ceil(count / COG_LOG.pageSize);
-      logger.info("> count=%d   page=%d", count, page);
-      await createFile(page);
+      if(count==0){
+        logger.info('> count 0 , empty log')
+      }else{
+        let page = Math.ceil(count / COG_LOG.pageSize);
+        logger.info("> count=%d   page=%d", count, page);
+        await createFile(page);
+      }
     } catch (e) {
       logger.error(e);
     }
     deleteFiles();
-    logger.info("### end scheduleDw ###\n");
+    logger.info("### end scheduleDw ###");
   });
 } // 스케쥴 종료
 
@@ -80,8 +84,8 @@ async function createFile(page) {
     ...gOptions,
   };
 
-  let date = util.getOldTime("d", 0, "YYYY-MM-DD");
-  let fd = fs.openSync(`${DW_DIR}/${date}.txt`, "w");
+  let date = util.getOldTime("d", 0, "YYYYMMDD");
+  let fd = fs.openSync(`${DW_DIR}/DW_SOE_${date}.dat`, "w");
   
   for (let i = 1; i <= page; i++) { // 페이징처리
     options.qs._page = i;
@@ -90,11 +94,11 @@ async function createFile(page) {
       let txt = i > 1 ? "\n" + dataFilter(appendRes) : dataFilter(appendRes);
       fs.appendFileSync(fd, txt); // 내용 더하기
     } else {
-      logger.error("> page=",page,appendRes.resultCode,appendRes.resultMessage);
+      logger.error("> page=", page, appendRes.resultCode, appendRes.resultMessage);
       break;
     }
   }
-  logger.info(`> log file created ${DW_DIR}${date}.txt`)
+  logger.info(`> log file created ${DW_DIR}/DW_SOE_${date}.dat`)
   fs.closeSync(fd);
 }
 
@@ -124,7 +128,7 @@ function dataFilter(recvData) {
 
 /** 일정기간 지난 파일 삭제 */
 function deleteFiles() {
-  let date = new Date(util.getOldTime('d', COG_LOG.deleteInterval)); // 삭제 기간 설정
+  let date = new Date(util.getOldTime('d', COG_LOG.deleteDate)); // 삭제 기간 설정
   let files = fs.readdirSync(path.resolve(DW_DIR)).filter(file=>file.endsWith('.txt'));
   for (let file of files) {
     let st =  fs.statSync(DW_DIR + file);
