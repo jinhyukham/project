@@ -25,24 +25,20 @@ rule.hour = 3; // 오전 3시에 실행 밑에 테스트용 시간 바꿔야함
 function scheduleDw() {
   const scheduleDw = schedule.scheduleJob("*/5 * * * * *", async function () {
     util.envReload();
-    logger.info("### start scheduleDw ###");
-    let fdate = util.getOldTime("d", 30, "YYYY-MM-DD 00:00:00.000"); //시작시간 테스트용 시간 들어가있음. 반영때 필수로 변경 default:1 !!
-    let tdate = util.getOldTime("d", 1, "YYYY-MM-DD 23:59:59.999"); //종료시간
+    loggerDw.info("### start scheduleDw ###");
+    let fdate = util.getOldTime("d", COG_LOG.subFromDate, "YYYY-MM-DD 00:00:00.000"); //시작시간 테스트용 시간 들어가있음. 반영때 필수로 변경 default:1 !!
+    let tdate = util.getOldTime("d", COG_LOG.subToDate, "YYYY-MM-DD 23:59:59.999"); //종료시간
 
     try {
       let count = await getCount(fdate, tdate); // log pageCount 가져오기
-      if(count==0){
-        logger.info('> count 0 , empty log')
-      }else{
         let page = Math.ceil(count / COG_LOG.pageSize);
-        logger.info("> count=%d   page=%d", count, page);
+        loggerDw.info("> count=%d   page=%d", count, page);
         await createFile(page);
-      }
     } catch (e) {
-      logger.error(e);
+      loggerDw.error(e);
     }
     deleteFiles();
-    logger.info("### end scheduleDw ###");
+    loggerDw.info("### end scheduleDw ###");
   });
 } // 스케쥴 종료
 
@@ -57,14 +53,14 @@ async function getCount(fdate, tdate) {
     },
     ...gOptions,
   };
-  logger.info("> fromDate : ", fdate);
-  logger.info("> toDate   : ", tdate);
+  loggerDw.info("> fromDate : ", fdate);
+  loggerDw.info("> toDate   : ", tdate);
 
   let items = await httpCall(opt);
   if (items.resultCode == 200) {
     count = items.result;
   } else {
-    logger.info(items.resultMessage);
+    loggerDw.info(items.resultMessage);
   }
   return count;
 }
@@ -94,11 +90,11 @@ async function createFile(page) {
       let txt = i > 1 ? "\n" + dataFilter(appendRes) : dataFilter(appendRes);
       fs.appendFileSync(fd, txt); // 내용 더하기
     } else {
-      logger.error("> page=", page, appendRes.resultCode, appendRes.resultMessage);
+      loggerDw.error("> page=", page, appendRes.resultCode, appendRes.resultMessage);
       break;
     }
   }
-  logger.info(`> log file created ${DW_DIR}/DW_SOE_${date}.dat`)
+  loggerDw.info(`> log file created ${DW_DIR}/DW_SOE_${date}.dat`)
   fs.closeSync(fd);
 }
 
@@ -135,9 +131,9 @@ function deleteFiles() {
     if (st.isFile() && date > new Date(st.mtime)) { // 파일 생성 시간이 삭제기간 넘었을때
       fs.unlink(path.resolve(DW_DIR,file), (err) => {
         if (err) {
-          logger.error(err);
+          loggerDw.error(err);
         } else {
-          logger.info("> delete file:", file, st.mtime);
+          loggerDw.info("> delete file:", file, st.mtime);
         }
       });
     }

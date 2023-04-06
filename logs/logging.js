@@ -71,7 +71,7 @@ const fileOpitons = (level, filename, format) => ({
   auditFile: (LOG_DIR || "../logs") + "/." + filename + ".audit.json",
 });
 
-global.logger = new createLogger({
+global.logger = new createLogger({ // 이거 카피해서 새로 만들어요
   format: format((info) => {
     info.timestamp = moment().utcOffset(540).format("YYYY-MM-DD HH:mm:ss.SSS");
     return info;
@@ -79,11 +79,40 @@ global.logger = new createLogger({
   transports: [
     new transports.Console({ level: LOG_LEVEL, format: outConsole }),
     new transports.DailyRotateFile(
-      fileOpitons(LOG_LEVEL, `${APP_NAME}.out`, outFile)
+      fileOpitons(LOG_LEVEL, `${APP_NAME}.out`, outFile) // 요게 파일명인데  이름 수정해야해~
     ),
   ],
   exitOnError: false,
 });
+
+global.loggerDw = new createLogger({ // 이거 카피해서 새로 만들어요
+  format: format((info) => {
+    info.timestamp = moment().utcOffset(540).format("YYYY-MM-DD HH:mm:ss.SSS");
+    return info;
+  })(),
+  transports: [
+    new transports.Console({ level: LOG_LEVEL, format: outConsole }),
+    new transports.DailyRotateFile(
+      fileOpitons(LOG_LEVEL, `${APP_NAME}_dw.out`, outFile) // 요게 파일명인데  이름 수정해야해~
+    ),
+  ],
+  exitOnError: false,
+});
+
+global.loggerAlert = new createLogger({ // 이거 카피해서 새로 만들어요
+  format: format((info) => {
+    info.timestamp = moment().utcOffset(540).format("YYYY-MM-DD HH:mm:ss.SSS");
+    return info;
+  })(),
+  transports: [
+    new transports.Console({ level: LOG_LEVEL, format: outConsole }),
+    new transports.DailyRotateFile(
+      fileOpitons(LOG_LEVEL, `${APP_NAME}_alert.out`, outFile) // 요게 파일명인데  이름 수정해야해~
+    ),
+  ],
+  exitOnError: false,
+});
+
 let _error = global.logger.error;
 global.logger.error = function (...args) {
   if (args.length == 0) return;
@@ -96,4 +125,31 @@ global.logger.error = function (...args) {
   });
 
   _error.apply(global.logger, args);
+};
+
+let _errorDw = global.loggerDw.error;
+global.loggerDw.error = function (...args) {
+  if (args.length == 0) return;
+  args = args.map((e) => {
+    if (isError(e)) {
+      return e.stack;
+    } else {
+      return e;
+    }
+  });
+
+  _errorDw.apply(global.loggerDw, args);
+};
+
+let _errorAlert = global.loggerAlert.error;
+global.loggerAlert.error = function (...args) {
+  if (args.length == 0) return;
+  args = args.map((e) => {
+    if (isError(e)) {
+      return e.stack;
+    } else {
+      return e;
+    }
+  });
+  _errorAlert.apply(global.loggerAlert, args);
 };
