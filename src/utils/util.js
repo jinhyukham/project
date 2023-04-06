@@ -3,13 +3,6 @@ const iconv = require("iconv-lite");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const yaml = require("js-yaml");
-function nullchk(obj) {
-  if (obj == null || obj == undefined) {
-    return "";
-  } else {
-    return String(obj).trim();
-  }
-}
 
 function makeTimeString(dateTime, format) {
   if (dateTime && dateTime.length > 0) {
