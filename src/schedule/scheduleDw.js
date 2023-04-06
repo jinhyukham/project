@@ -123,7 +123,7 @@ function dataFilter(recvData) {
 /** 일정기간 지난 파일 삭제 */
 function deleteFiles() {
   const date = new Date(util.getOldTime('d', COG_LOG.deleteDate)); // 삭제 기간 설정
-  const files = fs.readdirSync(path.resolve(DW_DIR)).filter(file=>file.endsWith('.txt'));
+  const files = fs.readdirSync(path.resolve(DW_DIR)).filter(file=>file.endsWith('.dat'));
   for (let file of files) {
     const st =  fs.statSync(DW_DIR + file);
     if (st.isFile() && date > new Date(st.mtime)) { // 파일 생성 시간이 삭제기간 넘었을때
