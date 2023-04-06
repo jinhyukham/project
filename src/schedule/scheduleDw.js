@@ -91,7 +91,7 @@ async function createFile(page) {
       break;
     }
     const txt = i > 1 ? "\n" + dataFilter(appendRes) : dataFilter(appendRes);
-    fs.appendFileSync(fd, txt); // 내용 더하기
+    fs.appendFileSync(fd, util.utf8ToKr(txt)); // 인코딩 및 data append
   }
   loggerDw.info(`> log file created ${DW_DIR}/DW_SOE_${date}.dat`)
   fs.closeSync(fd);
