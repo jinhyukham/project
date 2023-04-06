@@ -7,7 +7,7 @@
         "error_file": "../logs/apiconsole.log",
         "out_file": "../logs/apiconsole.log",
         "merge_logs" : true ,
-        "watch": [],
+        "watch": ["src/schedule"],
         "watch_options": { "followSymlinks":false},
         "exec_mode":"cluster",
         "instances": 1
