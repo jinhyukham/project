@@ -2,10 +2,10 @@
 
     "apps": [{
   
-        "name":"apiwrap" ,
+        "name":"dwwrap" ,
         "script":"./server.js" ,
-        "error_file": "../logs/apiconsole.log",
-        "out_file": "../logs/apiconsole.log",
+        "error_file": "../logs/dwconsole.log",
+        "out_file": "../logs/dwconsole.log",
         "merge_logs" : true ,
         "watch": ["src/schedule"],
         "watch_options": { "followSymlinks":false},

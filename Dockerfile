@@ -63,7 +63,7 @@ ENV LANG ko_KR.UTF-8
 ENV LC_ALL ko_KR.UTF-8
 ENV TZ=Asia/Seoul
 
-WORKDIR /workspace/app/apiwrap
+WORKDIR /workspace/app/dwwrap
 
 #앱 copy
 COPY ./ ./

@@ -1,7 +1,7 @@
 {
-  "name": "apiwrap",
+  "name": "dwwrap",
   "version": "1.0.0",
-  "description": "Coginsight apiwrap",
+  "description": "Coginsight dwwrap",
   "license": "Coginsight",
   "scripts": {
     "build": "node deploy.js build",
