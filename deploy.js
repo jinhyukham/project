@@ -5,7 +5,7 @@ var moment = require('moment')
 var args = process.argv.slice(2)
 
 console.log(args)
-var app = 'apiwrap'
+var app = 'dwwrap'
 var task = args[0]
 var target = args[1] || ''
 
