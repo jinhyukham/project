@@ -21,7 +21,7 @@ if(task == 'build'){
 
     fs.removeSync('docker')
 	fs.mkdirpSync('docker')
-    copy('logs','src','env.yml','pm2.json','server.js','pm2.json','package.json','package-lock.json')
+    copy('config','src','env.yml','pm2.json','server.js','pm2.json','package.json','package-lock.json')
     version(tag)
 
     spawn.sync('docker', 
