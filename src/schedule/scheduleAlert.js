@@ -93,13 +93,14 @@ async function clientCall() {
     }
 
     let call = await httpCall(options);
+    loggerAlert.info('####### push API result >>', call);
     if (call?.error_code == 0) { 
       loggerAlert.info('######### push API call! #########');
     } else {
       loggerAlert.error('######### push API Fail! #########');
     }
   } catch (e) {
-    loggerAlert.error("######### push API Error #########");
+    loggerAlert.error("######### push API Error #########",e);
   }
   loggerAlert.info("######### push API End #########");
 }
