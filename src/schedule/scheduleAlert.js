@@ -23,8 +23,8 @@ function scheduleAlert(){
     loggerAlert.info("######### scheduleAlert start ##########");
     try {
       await envReset(); // 스케쥴러 동작마다 env파일의 AGENT값 재세팅함
-      let countFromDate = util.getOldTime("h", 1, "YYYY-MM-DD HH:00:00"); // 테스트용 시간 변경해줘야함
-      let countToDate = util.getOldTime("", 0, "YYYY-MM-DD HH:00:00"); 
+      let countFromDate = util.getOldTime("h", 1, "YYYY-MM-DD HH:00:00.000"); // 테스트용 시간 변경해줘야함
+      let countToDate = util.getOldTime("h", 1, "YYYY-MM-DD HH:59:59.999"); 
 
       let options = {
         url: `${COG_LOG.baseUrl}/apis/projects/${COG_LOG.projectId}/log/-/count/`,
