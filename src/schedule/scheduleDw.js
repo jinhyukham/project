@@ -26,14 +26,14 @@ function scheduleDw() {
   const scheduleDw = schedule.scheduleJob(rule, async function () { // "*/5 * * * * *" 테스트
     util.envReload();
     loggerDw.info("### start scheduleDw ###");
-    let fdate = util.getOldTime("d", COG_LOG.subFromDate, "YYYY-MM-DD 00:00:00.000"); //시작시간 테스트용 시간 들어가있음. 반영때 필수로 변경 default:1 !!
-    let tdate = util.getOldTime("d", COG_LOG.subToDate, "YYYY-MM-DD 23:59:59.999"); //종료시간
+    const fdate = util.getOldTime("d", COG_LOG.subFromDate, "YYYY-MM-DD 00:00:00.000"); //시작시간 테스트용 시간 들어가있음. 반영때 필수로 변경 default:1 !!
+    const tdate = util.getOldTime("d", COG_LOG.subToDate, "YYYY-MM-DD 23:59:59.999"); //종료시간
 
     try {
-      let count = await getCount(fdate, tdate); // log pageCount 가져오기
-        let page = Math.ceil(count / COG_LOG.pageSize);
-        loggerDw.info("> count=%d   page=%d", count, page);
-        await createFile(page);
+      const count = await getCount(fdate, tdate); // log pageCount 가져오기
+      const page = Math.ceil(count / COG_LOG.pageSize);
+      loggerDw.info("> count=%d   page=%d", count, page);
+      await createFile(page);
     } catch (e) {
       loggerDw.error(e);
     }
@@ -91,7 +91,7 @@ async function createFile(page) {
       break;
     }
     const txt = i > 1 ? "\n" + dataFilter(appendRes) : dataFilter(appendRes);
-    fs.appendFileSync(fd, util.utf8ToKr(txt)); // 인코딩 및 data append
+    fs.appendFileSync(fd, util.utf8ToCp949(txt)); // 인코딩 및 data append
   }
   loggerDw.info(`> log file created ${DW_DIR}/DW_SOE_${date}.dat`)
   fs.closeSync(fd);

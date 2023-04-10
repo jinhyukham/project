@@ -79,6 +79,9 @@ function krToUtf8(buf) {
 function utf8ToKr(str) {
   return iconv.encode(str, "euc-kr");
 }
+function utf8ToCp949(str) {
+  return iconv.encode(str, "cp949");
+}
 
 function formatLength(items) {
   let length = 0;
@@ -136,6 +139,7 @@ module.exports = {
   sliceBuff,
   krToUtf8,
   utf8ToKr,
+  utf8ToCp949,
   formatLength,
   setReturnCode,
   createUUID,
