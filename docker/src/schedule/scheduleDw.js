@@ -9,8 +9,8 @@ const moment = require('moment')
 // log openapi 조회 수 : max:1만, default:100
 const gOptions = {
   headers: {
-    "coginsight-api-key": COG_LOG.apiKey,
-    "coginsight-domain-id": COG_LOG.domainId,
+    "api-key": COG_LOG.apiKey,
+    "domain-id": COG_LOG.domainId,
   },
   json: true,
 };
