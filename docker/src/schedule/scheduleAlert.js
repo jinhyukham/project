@@ -1,10 +1,10 @@
-const fs = require("fs");
+const fs       = require("fs");
 const httpCall = require("../protocol/httpCall");
-const yaml = require("js-yaml");
-const util = require("../utils/util");
+const yaml     = require("js-yaml");
+const util     = require("../utils/util");
 const schedule = require("node-schedule");
-const rule = new schedule.RecurrenceRule();
-rule.minute = 5; // 매시 5분마다 호출 아래 테스트용 시간 변경해줘야함
+const rule     = new schedule.RecurrenceRule();
+rule.minute    = 5; // 매시 5분마다 호출 아래 테스트용 시간 변경해줘야함
 
 /**  서버 재기동 없이 스케쥴러 호출 시 env파일의 AGENT_SET 값을 변경값으로 재구성시킴 */
 async function envReset() {
@@ -17,14 +17,15 @@ async function envReset() {
   }
 }
 
+/** Alert 스케쥴러 main */
 function scheduleAlert(){
-  const scheduleAlert = schedule.scheduleJob("*/6 * * * * *", async function () { //  테스트 시
-    /* log파일 읽어온 후 특정 비율 이상 에러 발생 확인 */
+  const scheduleAlert = schedule.scheduleJob("*/6 * * * * *", async function () { //  실 반영시 스케쥴 시간 rule로 변경 필요
+    // log파일 읽어온 후 특정 비율 이상 에러 발생 확인
     loggerAlert.info("######### scheduleAlert start ##########");
     try {
       await envReset(); // 스케쥴러 동작마다 env파일의 AGENT값 재세팅함
-      let countFromDate = util.getOldTime("h", 1, "YYYY-MM-DD HH:00:00.000"); // 테스트용 시간 변경해줘야함
-      let countToDate = util.getOldTime("h", 1, "YYYY-MM-DD HH:59:59.999"); 
+      let countFromDate = util.getOldTime("h", 1, "YYYY-MM-DD HH:00:00.000");
+      let countToDate   = util.getOldTime("h", 1, "YYYY-MM-DD HH:59:59.999"); 
 
       let options = {
         url: `${COG_LOG.baseUrl}/apis/projects/${COG_LOG.projectId}/log/-/count/`,
@@ -34,8 +35,8 @@ function scheduleAlert(){
           toDate  : countToDate,
         },
         headers: {
-          "api-key"  : COG_LOG.apiKey,
-          "domain-id": COG_LOG.domainId,
+          "coginsight-api-key"  : COG_LOG.apiKey,
+          "coginsight-domain-id": COG_LOG.domainId,
         }
       };
       let logCount = await httpCall(options);
@@ -64,13 +65,12 @@ function scheduleAlert(){
 async function clientCall() {
   loggerAlert.info("######### push API Start #########");
   try {
-    // 실제 반영 시  url 변경 및 headers 고객사 api 헤더값으로 변경 필요함
-    
+    // 실제 반영 시 url 변경 및 headers값이 존재하면 변경 또는 삭제 필요함
     let options = {
-      url: `${COG_LOG.baseUrl}/apis/esd/${COG_LOG.schema}/records`,//AGENT_SET.devUrl,
+      url: `${COG_LOG.baseUrl}/apis/esd/${COG_LOG.schema}/records`, //AGENT_SET.devUrl,
       headers: {
-        "api-key": COG_LOG.apiKey,
-        "domain-id": COG_LOG.domainId, 
+        "coginsight-api-key": COG_LOG.apiKey,
+        "coginsight-domain-id": COG_LOG.domainId
       },
       method: 'POST',
       json: true,

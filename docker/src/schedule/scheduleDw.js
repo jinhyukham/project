@@ -9,8 +9,8 @@ const moment = require('moment')
 // log openapi 조회 수 : max:1만, default:100
 const gOptions = {
   headers: {
-    "api-key": COG_LOG.apiKey,
-    "domain-id": COG_LOG.domainId,
+    "coginsight-api-key": COG_LOG.apiKey,
+    "coginsight-domain-id": COG_LOG.domainId,
   },
   json: true,
 };
@@ -98,7 +98,7 @@ async function createFile(page) {
 }
 
 /** logsAPI에서 받아온 데이터 정제*/
-function dataFilter(recvData) {
+async function dataFilter(recvData) {
   const filteredData = recvData.result.map((data) =>
     getLog.recv.reduce((saveData, { name, length, key }) => { // ../apis/getLog 참조
       let bf = _.get(data, name);
