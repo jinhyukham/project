@@ -1,0 +1,16 @@
+{
+
+    "apps": [{
+  
+        "name":"dwwrap" ,
+        "script":"./server.js" ,
+        "error_file": "../logs/dwconsole.log",
+        "out_file": "../logs/dwconsole.log",
+        "merge_logs" : true ,
+        "watch": ["src/schedule"],
+        "watch_options": { "followSymlinks":false},
+        "exec_mode":"cluster",
+        "instances": 1
+      }]
+  
+  }

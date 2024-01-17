@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "../logs/.apiwrap.out.audit.json",
+    "files": [
+        {
+            "date": 1681116206608,
+            "name": "../logs/apiwrap.out.2023-04-10",
+            "hash": "50b6ab5f4949a4231d1ee7b68a394fdee988d7eaf797c6b0ffbafc7eea7eb4cd"
+        }
+    ],
+    "hashType": "sha256"
+}
