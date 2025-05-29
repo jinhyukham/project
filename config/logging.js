@@ -71,7 +71,7 @@ const fileOpitons = (level, filename, format) => ({
   auditFile: (LOG_DIR || "../logs") + "/." + filename + ".audit.json",
 });
 
-global.logger = new createLogger({ // 이거 카피해서 새로 만들어요
+global.logger = new createLogger({
   format: format((info) => {
     info.timestamp = moment().utcOffset(540).format("YYYY-MM-DD HH:mm:ss.SSS");
     return info;
@@ -79,13 +79,13 @@ global.logger = new createLogger({ // 이거 카피해서 새로 만들어요
   transports: [
     new transports.Console({ level: LOG_LEVEL, format: outConsole }),
     new transports.DailyRotateFile(
-      fileOpitons(LOG_LEVEL, `${APP_NAME}.out`, outFile) // 요게 파일명인데  이름 수정해야해~
+      fileOpitons(LOG_LEVEL, `${APP_NAME}.out`, outFile) 
     ),
   ],
   exitOnError: false,
 });
 
-global.loggerDw = new createLogger({ // 이거 카피해서 새로 만들어요
+global.loggerDw = new createLogger({ 
   format: format((info) => {
     info.timestamp = moment().utcOffset(540).format("YYYY-MM-DD HH:mm:ss.SSS");
     return info;
@@ -93,13 +93,13 @@ global.loggerDw = new createLogger({ // 이거 카피해서 새로 만들어요
   transports: [
     new transports.Console({ level: LOG_LEVEL, format: outConsole }),
     new transports.DailyRotateFile(
-      fileOpitons(LOG_LEVEL, `${APP_NAME}_dw.out`, outFile) // 요게 파일명인데  이름 수정해야해~
+      fileOpitons(LOG_LEVEL, `${APP_NAME}_dw.out`, outFile) 
     ),
   ],
   exitOnError: false,
 });
 
-global.loggerAlert = new createLogger({ // 이거 카피해서 새로 만들어요
+global.loggerAlert = new createLogger({ 
   format: format((info) => {
     info.timestamp = moment().utcOffset(540).format("YYYY-MM-DD HH:mm:ss.SSS");
     return info;
@@ -107,7 +107,7 @@ global.loggerAlert = new createLogger({ // 이거 카피해서 새로 만들어�
   transports: [
     new transports.Console({ level: LOG_LEVEL, format: outConsole }),
     new transports.DailyRotateFile(
-      fileOpitons(LOG_LEVEL, `${APP_NAME}_alert.out`, outFile) // 요게 파일명인데  이름 수정해야해~
+      fileOpitons(LOG_LEVEL, `${APP_NAME}_alert.out`, outFile) 
     ),
   ],
   exitOnError: false,
