@@ -5,7 +5,8 @@ const path = require("path");
 const _ = require("lodash");
 const httpCall = require("../protocol/httpCall");
 const getLog = require("../apis/getLog");
-const moment = require('moment')
+const moment = require('moment');
+
 // log openapi 조회 수 : max:1만, default:100
 const gOptions = {
   headers: {
