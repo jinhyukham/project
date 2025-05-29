@@ -59,7 +59,6 @@ function scheduleAlert(){
   });
 }
 
-
 /** 에러 발생 특정 이상 발생 시 call api */
 async function clientCall() {
   loggerAlert.info("######### push API Start #########");
